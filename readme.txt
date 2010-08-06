@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: Alejandro Bernabé
+Contributors: Alejandro BernabÃ©
 Donate link: http://www.sortea2.com/
 Tags: comments, SEO, legibility, usability
 Requires at least: 2.0.2
