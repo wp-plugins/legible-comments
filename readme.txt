@@ -10,9 +10,9 @@ This plugin make readable your comments. Capitalization, good spaces between wor
 
 == Description ==
 
-The plugin capitalize firsts words in paragraphs, strip unnecesary spaces between words and puntuaction marks.
+The plugin **capitalize** firsts words in paragraphs, strip **unnecesary spaces between words** and puntuaction marks.
 
-Also have the option to envolve between em html tags the text that are between double quotes in order to increase the readability.
+Also have the option to envolve between em html tags the text that are between double quotes in order to increase the readability. It doesn't break **html code** in your comments, but other kind of special language will be probably broken, we keep this in mind for later versions.
 
 It respects proper names if the text is in lower cases. In case that the text is entirely in upper cases, it leaves all in lower cases without putting the first character of the proper names in upper case.
 
@@ -24,9 +24,11 @@ It respects proper names if the text is in lower cases. In case that the text is
 
 == Changelog ==
 
-= 0.1 =
-* First version of Legible Comments For Wordpress.
-= 0.2 =
-* Fixed some minor bugs.
+= 0.4 =
+* HTML tags will not be corrupted.
 = 0.3 =
 * URLs and e-mail addresses will not be corrupted.
+= 0.2 =
+* Fixed some minor bugs.
+= 0.1 =
+* First version of Legible Comments For Wordpress.
