@@ -5,7 +5,7 @@
  * Plugin URI: http://www.sortea2.com/blog/2010/03/plugin-legible-comments-for-wordpress-2/
  * Description: Transforms comments to be readable: Capitalization and well-spaced words.
  * Author: Alejandro Bernabé
- * Author URI: http://www.sortea2.com/
+ * Author URI: http://www.trackingo.com/
  *
     Copyright 2010  Alejandro Bernabé  (email : alex@sortea2.com)
 
