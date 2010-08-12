@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Legible Comments for Wordpress
- * Version: 0.4
+ * Version: 0.5
  * Plugin URI: http://www.sortea2.com/blog/2010/03/plugin-legible-comments-for-wordpress-2/
  * Description: Transforms comments to be readable: Capitalization and well-spaced words.
  * Author: Alejandro Bernabé
@@ -38,9 +38,14 @@ function of_cambia_content($content) {
 
 	include_once("CleanText.class.php");
 
-	$clean = new CleanText;
-	
-	return $clean->of_clean_text($content);
+	if (get_option('enableEmCLeg') == 'on') {
+		$em = true;
+	} else {
+		$em = false;
+	}
+
+	$clean = new CleanText($content,$em);
+	return $clean->of_clean_text();
 }
 add_filter('pre_comment_content', 'of_cambia_content');
 

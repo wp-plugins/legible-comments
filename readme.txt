@@ -24,6 +24,8 @@ It respects proper names if the text is in lower cases. In case that the text is
 
 == Changelog ==
 
+= 0.5 =
+* HTML Links not corrupted and some minor bugs fixed.
 = 0.4 =
 * HTML tags will not be corrupted.
 = 0.3 =
