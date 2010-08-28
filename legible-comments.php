@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Legible Comments for Wordpress
- * Version: 0.5
+ * Version: 0.5.5
  * Plugin URI: http://www.sortea2.com/blog/2010/03/plugin-legible-comments-for-wordpress-2/
  * Description: Transforms comments to be readable: Capitalization and well-spaced words.
  * Author: Alejandro Bernabé

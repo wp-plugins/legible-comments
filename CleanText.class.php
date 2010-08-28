@@ -2,18 +2,18 @@
 
 class CleanText {
 	/*
-	MODO 0: minúsculas
-	MODO 1: mayúsculas
+	MODE 0: lowercase
+	MODE 1: uppercase
 	*/
 	private $mode;
 	private $text;
 	private $quotes;
+	private $specials;
 	
 	public function __construct($text, $quotesEm=false) {
 		$this->text = $text;
 		$this->quotes = $quotesEm;
 	}
-
 	public function of_clean_text() {
 		$this->of_text_mode();
 
@@ -28,7 +28,7 @@ class CleanText {
 	private function of_normalize() {
 
 		$this->text = trim(html_entity_decode($this->text,ENT_QUOTES,'utf-8'));
-		$this->of_recoge_especiales();
+		$this->of_catch_specials();
 		$this->text = $this->of_punctuation_position($this->text);
 
 		if ($this->mode == 1) {
@@ -37,7 +37,7 @@ class CleanText {
 
 		$this->text = $this->of_translate_letters($this->text);
 
-		$this->of_resucita_especiales();
+		$this->of_restore_specials();
 
 		/*New line to <p> in the finish*/
 		$this->nl2p();
@@ -51,7 +51,8 @@ class CleanText {
 	private function of_text_mode() {
 		$percent = 0.0;
 		$lower = mb_strtolower($this->text, "UTF-8");
-		
+
+		/*It ompares the original string wuth a entire lowercase version of it to determine if the mayority is in uppercase*/
 		$return = similar_text($this->text, $lower, $percent);
 		
 		if ($percent > 50) {
@@ -60,48 +61,43 @@ class CleanText {
 			$this->mode = 1;
 		}
 	}
-	private function of_recoge_especiales() {
-		$envuelve = array('/(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/i',
+	private function of_catch_specials() {
+		$wrap = array('/(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/i',
 		'/[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+/i',
 		"/(<([\w]+)[^>]*>)(.*?)(<\/\\2>)/", "/<a\s+href=['\"].*['\"]>.*<\a>/i");
 
 		$matches = array();
-		$especiales = array();
-		foreach ($envuelve as $env) {
-			preg_match_all($env,$this->text,$matches);
+		$specials = array();
+		foreach ($wrap as $w) {
+			preg_match_all($w,$this->text,$matches);
 
 			foreach ($matches[0] as $m) {
-				$especiales[] = $m;	
+				$specials[] = $m;	
 			}
 		}
 
-		$this->especiales = $especiales;
-
-		//print_r($this->especiales);
-		//return $texto;
+		$this->specials = $specials;
 	}
-	private function of_resucita_especiales() {
+	private function of_restore_specials() {
 		$matches = array();
-		foreach ($this->especiales as $especial) {
-			$roto = $this->of_punctuation_position($especial);
-			$roto = $this->of_translate_letters($roto);
+		foreach ($this->specials as $special) {
+			$broken = $this->of_punctuation_position($special);
+			$broken = $this->of_translate_letters($broken);
 
-			$roto = trim($roto,' .');
+			$broken = trim($broken,' .');
 			
-			$this->text = str_ireplace($roto,$especial,$this->text);
+			$this->text = str_ireplace($broken,$special,$this->text);
 		}
 	}
 	private function of_translate_letters($text) {
-		//setlocale(LC_COLLATE, 'es_ES');
-		/*Primera letra que aparezca, en mayúsculas*/
+		/*First letter in uppercase*/
 		$text = preg_replace_callback('/^([\P{L}]*)([\p{L}]+)/i',create_function('$matches','return "$matches[1] ".ucfirst($matches[2]);'), $text);
 
-		/*Mayúsculas tras punto*/
+		/*Uppercase before dot*/
 		$text = preg_replace_callback('/(\.\s*)([\p{L}]+)/iS',
 				create_function('$matches','return "$matches[1] ".ucfirst($matches[2]);'), $text);
 		
-		/*Mayúsculas al principio de párrafo y punto al final de este*/
-
+		/*Uppercase at start of paragraph and dot at the finish*/
 		$text = preg_replace_callback('/([\p{L}]*)([\n|\r]+)([\P{L}]*)([\p{L}])/',
 			create_function('$matches','return $matches[1].".".$matches[2].$matches[3].mb_strtoupper($matches[4], "utf-8");'), $text);
 			
@@ -110,23 +106,23 @@ class CleanText {
 		return $text;
 	}
 	private function of_punctuation_position($text) {
-		/*Punto + Espacio (Aquí estamos. Hola)*/
+		/*Dot + Space (We are here. Hello)*/
 		$text = preg_replace('/ *([\.|,|;|:]) */', '$1 ', $text);
 		
-		/*Números + Punto + Espacio + Números, convierte números decimales*/
+		/*Numbers + Dot + Space + Numbers, it converts decimal numbers*/
 		$text = preg_replace('/(\d)\.\s(\d)/', '$1.$2', $text);
-		/*Caso de puntos suspensivos*/
+		/*Suspension points special case*/
 		$text = preg_replace('/(\s*\.\s*){2,}/','... ',$text);
 	
-		/*Letras repetidas más de dos veces*/
+		/*Repeated letters more than two times*/
 		$text = preg_replace('/([a-z])\\1{2,}/is', '$1$1', $text);
 
-		/*Estos signos van sin espacio delante y con uno después*/
+		/*These marks go without space in front and with it before.*/
 		$pattern = "/\s*([,|;|:|!|?]){1,}\s*/is";
 		$replace = "$1 ";
 		$text = preg_replace($pattern, $replace, $text);
 
-		/*Si termina en caracter de palabra, que acabe en punto (.)*/
+		/*If it finishes with word character, it will finish with dot (.)*/
 		$text = preg_replace('/([\w])$/i', "$1.", $text);
 		
 		return $text;
